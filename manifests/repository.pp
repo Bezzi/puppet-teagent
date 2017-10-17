@@ -1,4 +1,3 @@
-
 # == Class: teagent::repository
 # Copyright © 2013 ThousandEyes, Inc.
 #
