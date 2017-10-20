@@ -1,5 +1,5 @@
-name    'thousandeyes-teagent'
-version '0.0.1'
+name    'thousandeyes-te_agent'
+version '1.0.0'
 source 'git://github.com/thousandeyes/puppet-teagent'
 author 'thousandeyes'
 license 'GPLv3'
