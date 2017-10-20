@@ -13,6 +13,13 @@ class te_agent::service {
     false => 'stopped',
   }
 
+  # Addresses issue to fetch init system on RedHat < 7 versions.
+  if ($facts['os']['family'] == 'RedHat' and versioncmp($facts['os']['release']['full'],'7') < 0 ) {
+    Service {
+      provider => 'upstart',
+    }
+  }
+
   service { 'te-agent':
     ensure     => $te_agent_service_ensure,
     enable     => $te_agent::te_agent,

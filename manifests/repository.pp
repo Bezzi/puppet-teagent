@@ -10,17 +10,18 @@ class te_agent::repository {
 
   if $te_agent::set_repository == true {
 
-    $os_family   = $facts['os']['family']
+    $os_family = $facts['os']['family']
 
     case $os_family {
 
-      'RedHat', 'CentOS': {
-        $architecture = $facts['os']['architecture']
+      'RedHat': {
+        $os_name = $facts['os']['name']
         $os_maj_release = $facts['os']['release']['major']
+        $architecture = $facts['os']['architecture']
 
         yumrepo { 'thousandeyes.repo':
           ensure   => present,
-          baseurl  => "http://yum.thousandeyes.com/${os_codename}/${os_maj_release}/${architecture}",
+          baseurl  => "http://yum.thousandeyes.com/${os_name}/${os_maj_release}/${architecture}",
           gpgkey   => 'http://yum.thousandeyes.com/RPM-GPG-KEY-thousandeyes',
           gpgcheck => true,
         }

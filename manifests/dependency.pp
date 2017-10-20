@@ -14,8 +14,8 @@ class te_agent::dependency{
   case $os_family {
 
     'RedHat': {
-      if ($os_release < 6.3 ) {
-        fail("Please upgrade your operating system ${os_family} ${os_release} to 6.3 or newer.")
+      if (versioncmp($os_release,'6.3') <= 0 ) {
+        fail("Please upgrade your operating system ${os_family} ${os_release} to version 6.3 or newer.")
       }
     }
 
