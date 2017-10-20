@@ -4,10 +4,6 @@
 #
 # === Parameters
 #
-# [*account_token*]
-#   Account token for the agent.
-#   Default: 'accout_token' (Sample value)
-#
 # [*proxy_user*]
 #   Proxy username.
 #   Default: (disabled)
@@ -56,6 +52,10 @@
 #   Agent log path.
 #   Default: '/var/log'
 #
+# [*account_token*]
+#   Account token for the agent.
+#   Default: 'account_token' (Sample value)
+#
 # [*te_agent*]
 #  Handles the ThosuandEyes agent package.
 #  Possible values: true ('installed'), false ('purged').
@@ -98,7 +98,6 @@
 #
 
 class te_agent(
-Optional[String] $account_token = 'accout_token',
 Optional[String] $proxy_user = undef,
 Optional[String] $proxy_pass = undef,
 Optional[String] $proxy_bypass_list = undef,
@@ -110,6 +109,7 @@ Integer[0] $log_file_size = 10,
 Integer[0] $num_log_files = 13,
 Integer[0,1] $crash_reports = 1,
 String $log_path = '/var/log',
+String $account_token = 'account_token',
 Boolean $te_agent = true,
 Boolean $international_langs = false,
 Boolean $agent_utils = false,
