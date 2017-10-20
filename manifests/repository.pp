@@ -10,15 +10,14 @@ class te_agent::repository {
 
   if $te_agent::set_repository == true {
 
-    $distribution = $facts['os']['distro']['id']
-    $architecture = $facts['os']['architecture']
-    $os_codename  = $facts['os']['distro']['codename']
-    $os_maj_release = $facts['os']['release']['major']
+    $os_family   = $facts['os']['family']
 
-
-    case $distribution {
+    case $os_family {
 
       'RedHat', 'CentOS': {
+        $architecture = $facts['os']['architecture']
+        $os_maj_release = $facts['os']['release']['major']
+
         yumrepo { 'thousandeyes.repo':
           ensure   => present,
           baseurl  => "http://yum.thousandeyes.com/${os_codename}/${os_maj_release}/${architecture}",
@@ -27,9 +26,10 @@ class te_agent::repository {
         }
       }
 
-      'Ubuntu': {
+      'Debian': {
         $public_key = '/etc/apt/trusted.gpg.d/thousandeyes-apt-key.pub'
         $repository = '/etc/apt/sources.list.d/thousandeyes.list'
+        $os_codename = $facts['os']['distro']['codename']
 
         file { $public_key:
           ensure => 'present',

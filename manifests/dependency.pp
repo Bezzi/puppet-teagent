@@ -10,24 +10,23 @@ class te_agent::dependency{
 
   $os_family   = $facts['os']['family']
   $os_release  = $facts['os']['release']['full']
-  $os_codename = $facts['os']['distro']['codename']
 
   case $os_family {
 
     'RedHat': {
       if ($os_release < 6.3 ) {
-        fail("Please upgrade your operating system ${os_family} ${os_release} (${os_codename}) to 6.3 or newer.")
+        fail("Please upgrade your operating system ${os_family} ${os_release} to 6.3 or newer.")
       }
     }
 
     'Debian': {
-      if !($os_codename == 'trusty' or $os_codename == 'xenial') {
+      if !($os_release == '14.04' or $os_release == '16.04') {
         fail('Only Ubuntu 14.04 (trusty) and 16.04 (xenial) are supported. Please contact support.')
       }
     }
 
     default: {
-      fail("Operating system ${os_family} ${os_release} (${os_codename}) is not supported.")
+      fail("Operating system ${os_family} ${os_release} is not supported.")
     }
   }
 
