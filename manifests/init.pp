@@ -6,7 +6,7 @@
 #
 # [*account_token*]
 #   Account token for the agent.
-#   Default: (disabled)
+#   Default: 'accout_token' (Sample value)
 #
 # [*proxy_user*]
 #   Proxy username.
@@ -98,7 +98,7 @@
 #
 
 class te_agent(
-Optional[String] $account_token = undef,
+Optional[String] $account_token = 'accout_token',
 Optional[String] $proxy_user = undef,
 Optional[String] $proxy_pass = undef,
 Optional[String] $proxy_bypass_list = undef,

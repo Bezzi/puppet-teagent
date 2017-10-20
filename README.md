@@ -60,7 +60,7 @@ Attributes
     <td><tt>account_token</tt></td>
     <td>String</td>
     <td>Account token for the agent</td>
-    <td><tt>-</tt></td>
+    <td><tt>'accout_token' (Sample value)</tt></td>
   </tr>
   <tr>
     <td><tt>log_path</tt></td>
