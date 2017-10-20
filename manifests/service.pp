@@ -8,11 +8,32 @@
 #
 class te_agent::service {
 
-    service { 'te-agent':
-      ensure     => running,
-      enable     => true,
-      hasrestart => true,
-      hasstatus  => true,
-      subscribe  => File['/var/lib/te-agent/config_teagent.sh'],
-    }
+  $te_agent_service_ensure = $te_agent::te_agent ? {
+    true  => 'running',
+    false => 'stopped',
+  }
+
+  $browserbot_service_ensure = $te_agent::browserbot ? {
+    true  => 'running',
+    false => 'stopped',
+  }
+
+  service { 'te-agent':
+    ensure     => $te_agent_service_ensure,
+    enable     => $te_agent::te_agent,
+    hasrestart => true,
+    hasstatus  => true,
+    require    => [Package['te-agent'],File['/etc/te-agent.cfg']],
+    subscribe  => File['/etc/te-agent.cfg'],
+  }
+
+  service { 'te-browserbot':
+    ensure      => $browserbot_service_ensure,
+    enable      => $te_agent::browserbot,
+    hasrestart  => true,
+    hasstatus   => true,
+    require     => Package['te-browserbot'],
+    refreshonly => true,
+  }
+
 }

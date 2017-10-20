@@ -1,4 +1,4 @@
-# == Class: te_agent::install()
+# == Class: te_agent::install
 #
 # Manages packages: te-agent, te-browserbot, te-agent-utils and te-intl-fonts.
 #
@@ -6,47 +6,44 @@
 #
 # Copyright © 2017 ThousandEyes, Inc.
 #
-class te_agent::install(){
+class te_agent::install {
 
-  $os_distro   = facts['os.distro']
-  $os_release  = facts['os.release.full']
-  $os_codename = facts['os.distro.codename']
+  $te_agent_package_ensure = $te_agent::te_agent ? {
+    true  => 'installed',
+    false => 'purged',
+  }
 
-  case $os_distro {
+  $browserbot_package_ensure = $te_agent::browserbot ? {
+    true  => 'installed',
+    false => 'purged',
+  }
 
-    centos, redhat: {
-      if ($os_release < 6.3 ) {
-        fail("Please upgrade your operating system ${os_distro} ${os_release} (${os_codename}) to 6.3 or newer.")
-      }
-    }
+  $agent_utils_package_ensure = $te_agent::agent_utils ? {
+    true  => 'installed',
+    false => 'purged',
+  }
 
-    ubuntu: {
-      if  $os_codename != trusty or $os_codename != xenial {
-        fail('Only Ubuntu 14.04 (trusty) and 16.04 (xenial) are supported. Please contact support.')
-      }
-    }
-
-    default: {
-      fail("Operating system ${os_distro} ${os_release} (${os_codename}) is not supported.")
-    }
+  $international_langs_package_ensure = $te_agent::international_langs ? {
+    true  => 'installed',
+    false => 'purged',
   }
 
   package { 'te-agent':
-    ensure  => 'installed',
+    ensure  => $te_agent_package_ensure,
   }
 
   package { 'te-browserbot':
-    ensure  => $te_agent::browserbot,
+    ensure  => $browserbot_package_ensure,
     require => Package['te-agent'],
   }
 
   package { 'te-agent-utils':
-    ensure  => $te_agent::agent_utils,
+    ensure  => $agent_utils_package_ensure,
     require => Package['te-agent'],
   }
 
   package { 'te-intl-fonts':
-    ensure  => $te_agent::international_langs,
+    ensure  => $international_langs_package_ensure,
   }
 
 }

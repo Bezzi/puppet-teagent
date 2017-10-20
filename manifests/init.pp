@@ -6,22 +6,33 @@
 #
 # [*account_token*]
 #   Account token for the agent.
-#   Default is the sample value, which equals a disabled agent.
+#   Default: (disabled)
 #
-# [*international_langs*]
-#   Handles the international language package.
-#   Possible values are: 'present','installed','absent','purged','held','latest'.
-#   Default value is 'absent'.
+# [*proxy_user*]
+#   Proxy username.
+#   Default: (disabled)
 #
-# [*browserbot*]
-#   Handles the browserbot package.
-#   Possible values are: 'present','installed','absent','purged','held','latest'.
-#   Default value is 'absent'.
+# [*proxy_pass*]
+#   Proxy password.
+#   Default: (disabled)
 #
-# [*agent_utils*]
-#   Handles instalation of the agent utils package.
-#   Possible values are: 'present','installed','absent','purged','held','latest'.
-#   Default value is 'absent'.
+# [*proxy_bypass_list*]
+#   Proxy bypass list. Comma separated value.
+#   Default: (disabled)
+#
+# [*proxy_location*]
+#   Proxy location.
+#   Default: (disabled)
+#
+# [*proxy_auth_type*]
+#   Proxy authentication type.
+#   Possible values: 'BASIC','KERBEROS','NTLM'.
+#   Default: (disabled)
+#
+# [*proxy_type*]
+#   Proxy type.
+#   Possible values: 'DIRECT','STATIC','PAC'.
+#   Default: 'DIRECT' (No proxy enabled).
 #
 # [*log_level*]
 #   Agent log level.
@@ -36,29 +47,43 @@
 #   Amount of agent's log files.
 #   Default: 13
 #
+# [*crash_reports*]
+#   Agent crash reports.
+#   Possible values: 0 (disabled), 1 (enabled).
+#   Default: 1
+#
 # [*log_path*]
 #   Agent log path.
-#   Default: /var/log
+#   Default: '/var/log'
 #
-# [*proxy_user*]
-#   Proxy username.
-#   Default (disabled): ''
+# [*te_agent*]
+#  Handles the ThosuandEyes agent package.
+#  Possible values: true ('installed'), false ('purged').
+#  Default: true.
 #
-# [*proxy_pass*]
-#   Proxy password.
-#   Default (disabled): ''
+# [*international_langs*]
+#  Handles the international language package.
+#  Possible values: true ('installed'), false ('purged').
+#  Default: false.
 #
-# [*proxy_bypass_list*]
-#   Proxy bypass list. Comma separated value.
-#   Default (disabled): ''
+# [*agent_utils*]
+#  Handles instalation of the agent utils package.
+#  Possible values: true ('installed'), false ('purged').
+#  Default: false.
 #
-# [*set_repo*]
-#   Handles or not the ThousandEyes repository installation.
-#   Default: true
+# [*browserbot*]
+#  Handles the browserbot package.
+#  Possible values: true ('installed'), false ('purged').
+#  Default: false.
+#
+# [*set_repository*]
+#  Handles or not the ThousandEyes repository installation.
+#  Possible values: true, false.
+#  Default: true.
 #
 # === Examples
 #
-# Call teagent as a parameterized class
+# Call te_agent as a parameterized class
 #
 # See README for details.
 #
@@ -71,26 +96,31 @@
 #
 # Copyright © 2017 ThousandEyes, Inc.
 #
+
 class te_agent(
-  Optional[String] $account_token,
-  Enum['present','installed','absent','purged','held','latest'] $international_langs = 'absent',
-  Enum['present','installed','absent','purged','held','latest'] $browserbot  = 'absent',
-  Enum['present','installed','absent','purged','held','latest'] $agent_utils = 'absent',
-  Enum['DEBUG','TRACE'] $log_level = 'DEBUG',
-  Integer[0] $log_file_size = 10,
-  Integer[0] $num_log_files = 13,
-  String $log_path = '/var/log',
-  String $proxy_user = '',
-  String $proxy_pass = '',
-  String $proxy_bypass_list = '',
-  Boolean $set_repo = false,
+Optional[String] $account_token = undef,
+Optional[String] $proxy_user = undef,
+Optional[String] $proxy_pass = undef,
+Optional[String] $proxy_bypass_list = undef,
+Optional[String] $proxy_location = undef,
+Optional[Enum['BASIC','KERBEROS','NTLM']] $proxy_auth_type = undef,
+Enum['DIRECT','STATIC','PAC'] $proxy_type = 'DIRECT',
+Enum['DEBUG','TRACE'] $log_level = 'DEBUG',
+Integer[0] $log_file_size = 10,
+Integer[0] $num_log_files = 13,
+Integer[0,1] $crash_reports = 1,
+String $log_path = '/var/log',
+Boolean $te_agent = true,
+Boolean $international_langs = false,
+Boolean $agent_utils = false,
+Boolean $browserbot = false,
+Boolean $set_repository = true,
 ){
 
-  if $set_repo == true {
-    contain teagent::dependency
-  }
-
-  class { 'te_agent::install': }
+  class { 'te_agent::dependency': }
+  -> class { 'te_agent::repository':}
+  -> class { 'te_agent::install': }
   -> class { 'te_agent::config': }
-  -> class { 'te_agent::service': }
+  ~> class { 'te_agent::service': }
+
 }
